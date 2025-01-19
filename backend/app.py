@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from routers import tts
 from convollm import raggy
+from journallllm import journalrag
 
 app = FastAPI()
 
@@ -42,6 +43,15 @@ async def query_endpoint(request: QueryRequest):
         response = raggy.query_chroma(query)
         print(response)
         convert_to_speech(response)
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/journal")
+async def create_journal(query: str):
+    try:
+        response = journalrag.query_chroma(query)
+        print(response)
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
