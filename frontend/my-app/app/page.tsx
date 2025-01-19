@@ -5,11 +5,13 @@ import LampDemo from "@/components/ui/lamp";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect"; // Import TextGenerateEffect
 import logoPng from './logo.png';
+import { DatePickerDemo } from "@/components/ui/datepicker";
 
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");  // Track input value
-  const [displayText, setDisplayText] = useState("How are you?");  // Add this state
+  const [displayText, setDisplayText] = useState("Tell me about it");  // Add this state
+  const [date, setDate] = useState<Date | undefined>(new Date());
 
   const placeholders = [
     "Type your thoughts here...",
@@ -50,21 +52,21 @@ export default function Home() {
   };
 
   return (
-    <div className="relative h-[100vh] w-[100vw] flex flex-col items-center">
+    <div className="fixed inset-0 overflow-hidden bg-slate-950">
       {/* Logo on very top */}
       <img 
         src={logoPng.src} 
         alt="App Logo" 
-        className="absolute top-[3vh] left-[3vw] h-[min(5vh,40px)] z-50"
+        className="absolute top-[3vh] left-[3vw] h-[min(5vh,50px)] z-50"
       />
       
       {/* LampDemo in background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 transform -translate-y-32">
         <LampDemo />
       </div>
 
       {/* TextGenerateEffect above lamp but below input */}
-      <div className="absolute bottom-[25vh] left-1/2 transform -translate-x-1/2 z-20 w-[min(90vw,800px)] text-center">
+      <div className="absolute bottom-[40vh] left-1/2 transform -translate-x-1/2 z-20 w-[min(90vw,800px)] text-center">
         <TextGenerateEffect 
           key={displayText}
           words={displayText} 
@@ -74,12 +76,16 @@ export default function Home() {
       </div>
 
       {/* PlaceholdersAndVanishInput on top */}
-      <div className="absolute bottom-[5vh] w-[min(90vw,800px)] z-30">
+      <div className="absolute bottom-[20vh] left-1/2 transform -translate-x-1/2 w-[min(90vw,800px)] z-30">
         <PlaceholdersAndVanishInput
           placeholders={placeholders}
           onChange={handleChange}
           onSubmit={handleSubmit}
         />
+      </div>
+
+      <div className="absolute top-[3vh] right-[3vw] z-50">
+        <DatePickerDemo />
       </div>
     </div>
   );

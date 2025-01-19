@@ -237,7 +237,9 @@ export function PlaceholdersAndVanishInput({
       <button
         type="button"
         onClick={toggleRecording}
-        className="absolute right-14 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full bg-amber-100 dark:bg-zinc-800 transition duration-200 flex items-center justify-center"
+        className={`absolute right-14 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full transition duration-200 flex items-center justify-center ${
+          isRecording ? 'bg-red-500' : 'bg-amber-100 dark:bg-zinc-800'
+        }`}
       >
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
@@ -249,7 +251,7 @@ export function PlaceholdersAndVanishInput({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-gray-300 h-4 w-4"
+          className={`h-4 w-4 ${isRecording ? 'text-white' : 'text-gray-300'}`}
         >
           <path d="M12 1v22m-7-7h14" />
           <path d="M15 14l4-4-4-4" />

@@ -10,7 +10,7 @@ export default function LampDemo() {
     <LampContainer>
       <motion.h1
         initial={{ opacity: 0.5, y: "10vh" }}
-        whileInView={{ opacity: 1, y: "25vh" }}
+        whileInView={{ opacity: 1, y: "28vh" }}
         transition={{
           delay: 0.3,
           duration: 0.8,
@@ -18,7 +18,7 @@ export default function LampDemo() {
         }}
         className="mt-2 bg-gradient-to-br from-amber-100 to-slate-100 py-4 bg-clip-text text-center text-4xl font-poppins tracking-tight text-transparent md:text-7xl"
       >
-        DearMe
+        Dear Me
       </motion.h1>
     </LampContainer>  
   );
@@ -36,8 +36,8 @@ export const LampContainer = ({
       className={cn(
         "relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-slate-950 w-full rounded-md z-0",
         className
-      )}
-    >
+        )}
+      >
       {/* Render children (e.g., "DearMe" text) above the lamp visuals */}
       <div className="relative z-50 flex flex-col items-center px-5">{children}</div>
 
