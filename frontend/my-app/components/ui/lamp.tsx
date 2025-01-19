@@ -9,8 +9,8 @@ export default function LampDemo() {
   return (
     <LampContainer>
       <motion.h1
-        initial={{ opacity: 0.5, y: 100 }}
-        whileInView={{ opacity: 1, y: 250}}
+        initial={{ opacity: 0.5, y: "10vh" }}
+        whileInView={{ opacity: 1, y: "25vh" }}
         transition={{
           delay: 0.3,
           duration: 0.8,
@@ -20,7 +20,7 @@ export default function LampDemo() {
       >
         DearMe
       </motion.h1>
-    </LampContainer>
+    </LampContainer>  
   );
 }
 
