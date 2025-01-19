@@ -26,13 +26,12 @@ export default function Home() {
     console.log("Submitting:", inputValue); // Debug log
     
     try {
-      // Temporarily comment out API call for testing
-      /*const response = await fetch('/api/submit', {
+      const response = await fetch('http://localhost:8000/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: inputValue }),
+        body: JSON.stringify({ query: inputValue }),
       });
       
       if (!response.ok) {
@@ -40,9 +39,9 @@ export default function Home() {
       }
       
       const data = await response.json();
-      console.log("Server response:", data);*/
+      console.log("Server response:", data.response);
       
-      setDisplayText(inputValue);  // Update display text immediately
+      setDisplayText(data.response);  // Update display text immediately
       setInputValue(""); // Clear input after submission
       
     } catch (error) {

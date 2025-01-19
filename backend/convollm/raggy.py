@@ -30,7 +30,7 @@ def query_chroma(query):
         # Define the prompt template
         prompt = PromptTemplate.from_template(
             """
-            <s> [INST] You are an empathetic AI designed to facilitate journaling conversations. Respond like a supportive friend and an attentive listener. Show understanding, encourage reflection, and ask if there's anything else the user would like to share.
+            <s> [INST] You are an empathetic AI designed to facilitate journaling conversations. Respond like a supportive friend and an attentive listener. Show understanding, encourage reflection, and ask if there's anything else the user would like to share. Limit to 50 words.
             [/INST] </s> 
             [EXAMPLE]1. User: "I've been feeling really overwhelmed with work lately."
                         AI Response:
