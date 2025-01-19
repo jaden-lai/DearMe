@@ -4,14 +4,22 @@ import { useState } from "react";
 import LampDemo from "@/components/ui/lamp";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect"; // Import TextGenerateEffect
+import { ElevenLabsClient, stream } from "elevenlabs";
+import { Readable } from "stream";
 import logoPng from './logo.png';
 import { DatePickerDemo } from "@/components/ui/datepicker";
+
+import { ELEVENLABS_API_KEY } from "@/config";
 
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");  // Track input value
   const [displayText, setDisplayText] = useState("Tell me about it");  // Add this state
   const [date, setDate] = useState<Date | undefined>(new Date());
+
+  const client = new ElevenLabsClient({
+    apiKey: ELEVENLABS_API_KEY,
+  });
 
   const placeholders = [
     "Type your thoughts here...",
@@ -45,6 +53,16 @@ export default function Home() {
       
       setDisplayText(data.response);  // Update display text immediately
       setInputValue(""); // Clear input after submission
+
+      const audioStream = await client.textToSpeech.convertAsStream(
+        "JBFqnCBsd6RMkjVDRZzb",
+        {
+          text: data.response,
+          model_id: "eleven_flash_v2",
+        }
+      );
+      // option 1: play the streamed audio locally
+      await stream(Readable.from(audioStream));
       
     } catch (error) {
       console.error("Error submitting form:", error);
