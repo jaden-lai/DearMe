@@ -25,6 +25,30 @@ export default function Home() {
     "Start typing something interesting..."
   ];
 
+  const playAudioStream = async (audioStream: Readable) => {
+    const chunks: BlobPart[] = [];
+  
+    // Collect all chunks from the stream
+    for await (const chunk of audioStream) {
+      chunks.push(chunk);
+    }
+  
+    // Create a Blob from the chunks
+    const audioBlob = new Blob(chunks, { type: "audio/mpeg" });
+  
+    // Generate a Blob URL
+    const audioUrl = URL.createObjectURL(audioBlob);
+  
+    // Play the audio
+    const audio = new Audio(audioUrl);
+    audio.play();
+  
+    // Optionally, release the URL once playback is done
+    audio.onended = () => {
+      URL.revokeObjectURL(audioUrl);
+    };
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -59,8 +83,8 @@ export default function Home() {
           model_id: "eleven_flash_v2",
         }
       );
-      // option 1: play the streamed audio locally
-      await stream(Readable.from(audioStream));
+      
+      await playAudioStream(Readable.from(audioStream));
       
     } catch (error) {
       console.error("Error submitting form:", error);
