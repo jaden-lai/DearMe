@@ -9,12 +9,16 @@ import { Readable } from "stream";
 import logoPng from './logo.png';
 import { DatePickerDemo } from "@/components/ui/datepicker";
 import { ELEVENLABS_API_KEY } from "@/config";  // Update import path
+// import sample txt
+import { text } from "@/app/sample";
 
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");  // Track input value
   const [displayText, setDisplayText] = useState("To yourself, for yourself");  // Add this state
   const [date, setDate] = useState("");
+  const [popupText, setPopupText] = useState<string | null>(null); // Popup text state
+
 
   const client = new ElevenLabsClient({
     apiKey: ELEVENLABS_API_KEY || "",  // Add fallback empty string
@@ -103,8 +107,35 @@ export default function Home() {
     }
 
   };
+
+// Popup Component
+const Popup: React.FC<{ text: string; onClose: () => void }> = ({ text, onClose }) => (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm z-50">
+    <div className="bg-gray-800 text-gray-100 rounded-lg shadow-xl p-6 w-[50vw] max-w-2xl">
+      <h1>Summary</h1>
+      <p className="text-center text-lg font-medium">{text}</p>
+      <button
+        className="mt-4 w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all"
+        onClick={onClose}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+);
   
-const handleDateChange = async (newDate: string | undefined) => {
+const handleDateChange = async (newDate: string) => {
+  if (!newDate) {
+    return "Error: Invalid date";
+  };
+
+  if (newDate === "20250119") {
+    setPopupText(text);
+    return;
+  }
+
+  console.log(typeof(newDate));
+
   setDate(newDate ?? "");
   try {
     console.log(newDate);
@@ -113,7 +144,7 @@ const handleDateChange = async (newDate: string | undefined) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({session_id: newDate}),
+      body: JSON.stringify({query: "test", session_id: newDate}),
     });
     
     if (!response.ok) {
@@ -123,7 +154,9 @@ const handleDateChange = async (newDate: string | undefined) => {
     const data = await response.json();
     console.log("Server response:", data.response);
     
-    setDisplayText(data.response);  // Update display text immediately
+    // setDisplayText(data.response);  // Update display text immediately
+    setPopupText("Journal entries for " + newDate + ":\n" + data.response);
+    
   } catch (error) {
     console.error("Error submitting form:", error);
   }
@@ -135,7 +168,7 @@ const handleDateChange = async (newDate: string | undefined) => {
       <img 
         src={logoPng.src} 
         alt="App Logo" 
-        className="absolute top-[3vh] left-[3vw] h-[min(5vh,50px)] z-50"
+        className="absolute top-[1vh] left-[1vw] h-[min(15vh,300px)] z-50"
       />
       
       {/* LampDemo in background */}
@@ -165,6 +198,8 @@ const handleDateChange = async (newDate: string | undefined) => {
       <div className="absolute top-[3vh] right-[3vw] z-50">
         <DatePickerDemo onDateChange={handleDateChange} />
       </div>
+
+      {popupText && <Popup text={popupText} onClose={() => setPopupText(null)} />}
     </div>
   );
 }

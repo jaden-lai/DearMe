@@ -16,7 +16,7 @@ export default function LampDemo() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="mt-2 bg-gradient-to-br from-amber-100 to-slate-100 py-4 bg-clip-text text-center text-4xl font-poppins tracking-tight text-transparent md:text-7xl"
+        className="mt-2 bg-gradient-to-br from-amber-100 to-slate-100 py-4 bg-clip-text text-center text-4xl font-poppins font-bold tracking-tight text-transparent md:text-7xl"
       >
         Dear Me
       </motion.h1>

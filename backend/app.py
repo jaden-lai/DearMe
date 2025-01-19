@@ -31,6 +31,9 @@ class QueryRequest(BaseModel):
     query: str
     session_id: str
 
+class JournalRequest(BaseModel):
+    session_id: str
+
 def log_messages(session_id: str, user_query: str, response: str):
     """
     Log user queries and responses to Redis
@@ -98,7 +101,8 @@ async def query_endpoint(request: QueryRequest):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.post("/journal")
-async def create_journal(session_id: str):
+async def create_journal(request: JournalRequest):
+    session_id = request.session_id
     try:
         print(session_id)
         response = journalrag.query_chroma(session_id)
