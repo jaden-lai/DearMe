@@ -9,7 +9,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 CHROMA_PATH = "chroma"
 
-def query_chroma(query: str):
+def query_chroma(query: str, session_id: str):
     try:
         # Embedding function
         embedding = FastEmbedEmbeddings()

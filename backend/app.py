@@ -1,10 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from langchain_community.chat_message_histories import RedisChatMessageHistory
+
 
 from routers import tts
 from convollm import raggy
 from journallllm import journalrag
+
+import datetime, redis
 
 app = FastAPI()
 
@@ -17,13 +21,57 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Session is YYYYMMDD
+session = datetime.datetime.now().strftime("%Y%m%d")
+
+REDIS_URL = "redis://localhost:6379"
+
 # Define the input data model
 class QueryRequest(BaseModel):
     query: str
+    session_id: str
+
+def log_messages(session_id: str, user_query: str, response: str):
+    """
+    Log user queries and responses to Redis
+    Args:
+        session_id (str): The session ID
+        user_query (str): The user query
+        response (str): The AI response
+    Returns:
+        None
+    """
+    try:
+        message_log = RedisChatMessageHistory(session_id, REDIS_URL)
+        message_log.add_user_message(user_query)
+        message_log.add_ai_message(response)
+        return
+    except Exception as e:
+        print(f"Error in log_chat_history: {e}")
+        raise
+
+def get_session_history(session_id: str):
+    """
+    Get the session history from Redis
+    Args:
+        session_id (str): The session ID
+    Returns:
+        List[BaseMessage]: The list of chat messages
+    """
+    return RedisChatMessageHistory(session_id, REDIS_URL).messages
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello World"}
+    return {"message": f"Hello World @ {session}"}
+
+@app.get("/dbhealth")
+def ping_db():
+    try:
+        r = redis.Redis.from_url(REDIS_URL)
+        r.ping()
+        return {"message": "Database connection successful"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Database connection error")
 
 
 def convert_to_speech(text: str):
@@ -39,18 +87,21 @@ def convert_to_speech(text: str):
 @app.post("/query")
 async def query_endpoint(request: QueryRequest):
     query = request.query
+    session_id = request.session_id
     try:
-        response = raggy.query_chroma(query)
+        response = raggy.query_chroma(query, session_id)
         print(response)
-        # convert_to_speech(response)
+        log_messages(session_id, query, response)
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.post("/journal")
-async def create_journal(query: str):
+async def create_journal(request: QueryRequest):
+    query = request.query
+    session_id = request.session_id
     try:
-        response = journalrag.query_chroma(query)
+        response = journalrag.query_chroma(query, session_id)
         print(response)
         return {"response": response}
     except Exception as e:

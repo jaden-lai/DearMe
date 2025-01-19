@@ -2,14 +2,26 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.chat_models import ChatOllama
 from langchain.prompts import PromptTemplate
 from langchain_community.embeddings import FastEmbedEmbeddings
-import ssl
+from langchain_community.chat_message_histories import RedisChatMessageHistory
+
+import ssl, os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 # Ensure SSL context works for NLTK if needed
 ssl._create_default_https_context = ssl._create_unverified_context
 
 CHROMA_PATH = "chroma"
+REDIS_URL = os.getenv("REDIS_URL")
 
-def query_chroma(query):
+def get_session_history(session_id):
+    """
+    Get the session history from Redis
+    """
+    return RedisChatMessageHistory(session_id, REDIS_URL)
+
+def query_chroma(query: str, session_id: str):
     """
     THIS IS THE ONE
     """
@@ -30,7 +42,7 @@ def query_chroma(query):
         # Define the prompt template
         prompt = PromptTemplate.from_template(
             """
-            <s> [INST] You are an empathetic AI designed to facilitate journaling conversations. Respond like a supportive chill friend and an attentive listener. Show understanding, encourage reflection, and ask if there's anything else the user would like to share. Limit to FOUR SENTENCES.
+            <s> [INST] You are an empathetic AI designed to facilitate journaling conversations. Respond like a supportive chill friend and an attentive listener. Show understanding, encourage reflection, and ask if there's anything else the user would like to share. Limit to FOUR SENTENCES, 50 words.
             [/INST] </s> 
             [EXAMPLE]1. User: "I've been feeling really overwhelmed with work lately."
                         AI Response:
@@ -53,6 +65,7 @@ def query_chroma(query):
             [EXAMPLE]
             [INST] Question: {question} 
             Context: {context} 
+            Chat History: {chat_history}
             Answer: [/INST]
             """
         )
@@ -67,10 +80,13 @@ def query_chroma(query):
         
         # Prepare context by joining the document contents
         context_text = "\n".join([doc.page_content for doc in documents])
-        print(context_text)
-        print(retrieval_input)
+        # print(context_text)
+        # print(retrieval_input)
         # Format the prompt with the question and context
-        input_data = prompt.format(question=query, context=context_text)
+
+        chat_history = get_session_history(session_id=session_id).messages
+
+        input_data = prompt.format(question=query, context=context_text, chat_history=chat_history)
 
         # Create a list of messages as strings
         messages = [input_data]
