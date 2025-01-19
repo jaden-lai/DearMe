@@ -2,14 +2,26 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.chat_models import ChatOllama
 from langchain.prompts import PromptTemplate
 from langchain_community.embeddings import FastEmbedEmbeddings
+from langchain_community.chat_message_histories import RedisChatMessageHistory
+from langchain_core.messages import HumanMessage
+
 import ssl
 
 # Ensure SSL context works for NLTK if needed
 ssl._create_default_https_context = ssl._create_unverified_context
 
 CHROMA_PATH = "chroma"
+REDIS_URL = "redis://localhost:6379"
 
-def query_chroma(query: str, session_id: str):
+def get_history(session_id: str):
+    chat_history = RedisChatMessageHistory(session_id, REDIS_URL)
+    user_messages = []
+    for message in chat_history.messages:
+        if message is HumanMessage:
+            user_messages.append(message.content)
+    return user_messages
+
+def query_chroma(session_id: str):
     try:
         # Embedding function
         embedding = FastEmbedEmbeddings()
@@ -62,7 +74,7 @@ def query_chroma(query: str, session_id: str):
 
             [EXAMPLE]
             [INST] Make it a journal entry where it has date, and summary of the day. No listing activities. Also make sure you include all of the "moments" in the QUESTION. Do not restate the CONTEXT questions, they are to help you to write your journal by provoking your thoughts.
-            Question: {question} 
+            Chat history: {chat_history}
             Here are some questions that will help as a journaling template: {context} 
             Answer: [/INST]
             """
@@ -71,17 +83,18 @@ def query_chroma(query: str, session_id: str):
         # Initialize the model once
         model = ChatOllama(model="mistral")
 
-        retrieval_input = f"Query: {query}\nPrompt: {prompt}"
+        retrieval_input = f"Prompt: {prompt}"
 
         # Retrieve relevant documents based on the query using invoke
         documents = retriever.invoke(retrieval_input)
         
         # Prepare context by joining the document contents
         context_text = "\n".join([doc.page_content for doc in documents])
-        print(context_text)
-        print(retrieval_input)
+        chat_history = get_history(session_id)
         # Format the prompt with the question and context
-        input_data = prompt.format(question=query, context=context_text)
+        input_data = prompt.format(context=context_text, chat_history=chat_history)
+
+        print(prompt)
 
         # Create a list of messages as strings
         messages = [input_data]
@@ -95,6 +108,6 @@ def query_chroma(query: str, session_id: str):
     except Exception as e:
         return f"Error during query: {e}"
 
-if __name__ == "__main__":
-    query = "Today I ate my booger and I don't want to tell anyone.. I think one of my friends saw it and didn't say anything LOL. I just ate lunch with my dad and it was pretty good pankcakes ahha., "  # Replace with an actual query
-    print(query_chroma(query))
+# if __name__ == "__main__":
+#     query = "Today I ate my booger and I don't want to tell anyone.. I think one of my friends saw it and didn't say anything LOL. I just ate lunch with my dad and it was pretty good pankcakes ahha., "  # Replace with an actual query
+#     print(query_chroma(query))

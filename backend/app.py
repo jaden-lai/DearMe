@@ -50,6 +50,7 @@ def log_messages(session_id: str, user_query: str, response: str):
         print(f"Error in log_chat_history: {e}")
         raise
 
+@app.get("/history/{session_id}")
 def get_session_history(session_id: str):
     """
     Get the session history from Redis
@@ -58,7 +59,7 @@ def get_session_history(session_id: str):
     Returns:
         List[BaseMessage]: The list of chat messages
     """
-    return RedisChatMessageHistory(session_id, REDIS_URL).messages
+    return {"message": RedisChatMessageHistory(session_id, REDIS_URL).messages}
 
 @app.get("/")
 def read_root():
@@ -97,11 +98,9 @@ async def query_endpoint(request: QueryRequest):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.post("/journal")
-async def create_journal(request: QueryRequest):
-    query = request.query
-    session_id = request.session_id
+async def create_journal(session_id: str):
     try:
-        response = journalrag.query_chroma(query, session_id)
+        response = journalrag.query_chroma(session_id)
         print(response)
         return {"response": response}
     except Exception as e:
