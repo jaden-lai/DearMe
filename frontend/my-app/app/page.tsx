@@ -20,9 +20,27 @@ export default function Home() {
     setInputValue(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted with value:", inputValue);
+    try {
+      const response = await fetch('/api/submit', {  // adjust URL to your API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: inputValue }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      const data = await response.json();
+      console.log("Server response:", data);
+      
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
