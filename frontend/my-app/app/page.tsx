@@ -27,21 +27,25 @@ export default function Home() {
 
   return (
     <div className="relative h-[100vh] w-[100vw]">
-      {/* LampDemo stays in the background */}
+      {/* Logo on very top */}
       <img 
         src={logoPng.src} 
         alt="App Logo" 
         className="absolute top-[2vh] left-[2vw] h-[5vh] z-50"
       />
-      <LampDemo />
+      
+      {/* LampDemo in background */}
+      <div className="z-0">
+        <LampDemo />
+      </div>
 
-      {/* TextGenerateEffect placed above the input */}
-      <div className="absolute bottom-[20vh] left-1/2 transform -translate-x-1/2 z-10">
+      {/* TextGenerateEffect above lamp but below input */}
+      <div className="absolute bottom-[20vh] left-1/2 transform -translate-x-1/2 z-20">
         <TextGenerateEffect words="How are you?" duration={1} filter={true} />
       </div>
 
-      {/* PlaceholdersAndVanishInput stays at the bottom */}
-      <div className="absolute bottom-[2vh] w-full px-[4vw]">
+      {/* PlaceholdersAndVanishInput on top */}
+      <div className="absolute bottom-[2vh] w-full px-[4vw] z-30">
         <PlaceholdersAndVanishInput
           placeholders={placeholders}
           onChange={handleChange}
