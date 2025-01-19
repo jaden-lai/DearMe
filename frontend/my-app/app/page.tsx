@@ -3,6 +3,8 @@
 import { useState } from "react";
 import LampDemo from "@/components/ui/lamp";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect"; // Import TextGenerateEffect
+import logoPng from './logo.png';
 
 
 export default function Home() {
@@ -24,12 +26,22 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative h-[100vh] w-[100vw]">
       {/* LampDemo stays in the background */}
+      <img 
+        src={logoPng.src} 
+        alt="App Logo" 
+        className="absolute top-[2vh] left-[2vw] h-[5vh] z-50"
+      />
       <LampDemo />
-      
+
+      {/* TextGenerateEffect placed above the input */}
+      <div className="absolute bottom-[20vh] left-1/2 transform -translate-x-1/2 z-10">
+        <TextGenerateEffect words="How are you?" duration={1} filter={true} />
+      </div>
+
       {/* PlaceholdersAndVanishInput stays at the bottom */}
-      <div className="absolute bottom-0 w-full p-4">
+      <div className="absolute bottom-[2vh] w-full px-[4vw]">
         <PlaceholdersAndVanishInput
           placeholders={placeholders}
           onChange={handleChange}

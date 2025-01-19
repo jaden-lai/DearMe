@@ -4,6 +4,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
+// Add these type declarations at the top of the file, after the imports
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
 export function PlaceholdersAndVanishInput({
   placeholders,
   onChange,
@@ -14,6 +22,8 @@ export function PlaceholdersAndVanishInput({
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
+  const [isRecording, setIsRecording] = useState(false); // State for microphone recording status
+  const [transcription, setTranscription] = useState(""); // To store the speech-to-text result
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startAnimation = () => {
@@ -174,6 +184,31 @@ export function PlaceholdersAndVanishInput({
     vanishAndSubmit();
     onSubmit && onSubmit(e);
   };
+
+  // Function to start/stop recording
+  const toggleRecording = () => {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+    } else {
+      // Start recording
+      setIsRecording(true);
+      startRecording();
+    }
+  };
+
+  // Function to handle speech recognition and set the transcription
+  const startRecording = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setTranscription(transcript); // Set transcription to the state
+      setValue(transcript); // Update input field with the transcription
+    };
+    recognition.start();
+  };
+
   return (
     <form
       className={cn(
@@ -205,6 +240,29 @@ export function PlaceholdersAndVanishInput({
           animating && "text-transparent dark:text-transparent"
         )}
       />
+
+      {/* Microphone Button */}
+      <button
+        type="button"
+        onClick={toggleRecording}
+        className="absolute right-14 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full bg-amber-200 dark:bg-zinc-800 transition duration-200 flex items-center justify-center"
+      >
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-gray-300 h-4 w-4"
+        >
+          <path d="M12 1v22m-7-7h14" />
+          <path d="M15 14l4-4-4-4" />
+        </motion.svg>
+      </button>
 
       <button
         disabled={!value}
