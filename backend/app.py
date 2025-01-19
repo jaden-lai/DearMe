@@ -1,11 +1,9 @@
-from fastapi import FastAPI, HTTPException, File, UploadFile
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from routers import tts, audio_to_text
+from routers import tts
 from convollm import raggy
-
-import shutil
 
 app = FastAPI()
 
