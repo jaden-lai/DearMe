@@ -8,7 +8,7 @@ import { ElevenLabsClient, stream } from "elevenlabs";
 import { Readable } from "stream";
 import logoPng from './logo.png';
 import { DatePickerDemo } from "@/components/ui/datepicker";
-import { ELEVENLABS_API_KEY } from "./config";  // Update import path
+import { ELEVENLABS_API_KEY } from "@/config";  // Update import path
 
 
 export default function Home() {
@@ -26,6 +26,30 @@ export default function Home() {
     "What's on your mind?",
     "Start typing something interesting..."
   ];
+
+  const playAudioStream = async (audioStream: Readable) => {
+    const chunks: BlobPart[] = [];
+  
+    // Collect all chunks from the stream
+    for await (const chunk of audioStream) {
+      chunks.push(chunk);
+    }
+  
+    // Create a Blob from the chunks
+    const audioBlob = new Blob(chunks, { type: "audio/mpeg" });
+  
+    // Generate a Blob URL
+    const audioUrl = URL.createObjectURL(audioBlob);
+  
+    // Play the audio
+    const audio = new Audio(audioUrl);
+    audio.play();
+  
+    // Optionally, release the URL once playback is done
+    audio.onended = () => {
+      URL.revokeObjectURL(audioUrl);
+    };
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -55,14 +79,14 @@ export default function Home() {
       setInputValue(""); // Clear input after submission
 
       const audioStream = await client.textToSpeech.convertAsStream(
-        "JBFqnCBsd6RMkjVDRZzb",
+        "cgSgspJ2msm6clMCkdW9",
         {
           text: data.response,
           model_id: "eleven_flash_v2",
         }
       );
-      // option 1: play the streamed audio locally
-      await stream(Readable.from(audioStream));
+      
+      await playAudioStream(Readable.from(audioStream));
       
     } catch (error) {
       console.error("Error submitting form:", error);
