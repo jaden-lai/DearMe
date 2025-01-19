@@ -20,36 +20,46 @@ def query_chroma(query):
             search_type="similarity_score_threshold",
             search_kwargs={
                 "k": 5,  # Adjust based on the number of relevant docs you want to retrieve
-                "score_threshold": 0.4,
+                "score_threshold": 0.3,
             },
         )
         
         # Define the prompt template
         prompt = PromptTemplate.from_template(
             """
-            <s> [INST] You are an empathetic AI designed to facilitate journaling conversations. Respond like a supportive friend and an attentive listener. Show understanding, encourage reflection, and ask if there's anything else the user would like to share.
-            [/INST] </s> 
-            [EXAMPLE]1. User: "I've been feeling really overwhelmed with work lately."
+            <s> [INST] You are going to write a journal entry according to the QUESTION which will be what the user experienced during the day. 
+            Make sure to include the date on top.[/INST] </s> 
+            [EXAMPLE]1. User: "Today, I've been thinking a lot about what my cores values are. I got in trouble today because I was honest about my wrongdoings, but it defintely felt better being honest"
                         AI Response:
-                        That sounds really tough. It’s not easy juggling everything when work feels overwhelming. You're doing your best, and that counts for a lot. Would you like to share more about what’s been making it so challenging, or is there anything specific you'd like to talk about?
-                    2. User: "I had such a great time at the concert last night!"
+                        Date: January 15, 2023
+
+                        Today I’ve been considering my core values and how they impact the decisions I make in my life. I realize that my values are an essential part of who I am, and they play a significant role in shaping my thoughts, actions, and choices.
+
+                        One of my core values is honesty. I believe that it’s essential to be truthful with myself and others, even when it’s difficult. When I’m faced with a decision, I always try to consider whether it aligns with my values of honesty and integrity. If I feel that a decision would compromise these values, I know that it’s not the right choice for me.
+
+                        Another value that’s important to me is kindness. I believe that everyone deserves to be treated with respect and compassion, regardless of their background or circumstances. When I’m making a decision, I try to consider how it will impact others and whether it aligns with my values of kindness and empathy.
+
+                        Finally, I value personal growth and self-improvement. I believe that life is a journey of learning and self-discovery, and I always strive to grow and evolve as a person. When I’m making a decision, I try to consider whether it will help me grow and develop as a person, both personally and professionally.
+
+                        Reflecting on my core values has helped me gain clarity on what’s important to me and how I can make decisions that align with my values. I know that when I make choices that align with my values, I feel more fulfilled, purposeful, and true to myself.
+                    2. User: "Bruh therer were so many meetings today at work I was working like a dog. I met a friend to dinner today but we vibed and chilled and talked baout the future. It was nice having a nice social time let sgooo"
                         AI Response:
-                        That sounds amazing! It must have felt great to enjoy the energy of live music. What was your favorite part of the concert? Or is there anything else you'd like to talk about?
-                    3. User: "I had a fight with my best friend, and I don’t know what to do."
-                        AI Response:
-                        I'm so sorry to hear that. Conflicts with people we care about can feel really upsetting. It shows how much they mean to you that this is on your mind. Do you want to talk about what happened or how you’re feeling about it? I’m here to listen if there’s anything else you want to share.
-                    4. User: "I’m not sure if I made the right choice about switching my major."
-                        AI Response:
-                        It’s completely normal to feel uncertain after making a big decision like that. It shows you really care about your future. What’s been on your mind about the switch? Is there anything else you’d like to reflect on together?
-                    5. User: "I’m really anxious about the presentation tomorrow."
-                        AI Response:
-                        It’s understandable to feel nervous about something important. It shows how much you care about doing well. Would you like to talk about what’s worrying you most, or maybe we can think about ways to make it feel a little easier? Is there anything else on your mind?
-                    6. User: "No, I don't have more to talk about, thanks for listening"
-                        AI Response: Okay, let me know if you want to talk more!
+                        Date: April 27, 2022
+
+                        Today was a busy day at work. I had a lot of meetings and deadlines to meet, which kept me on my toes all day. I felt a little bit stressed at times, but overall, I was able to stay focused and get everything done that needed to be done.
+
+                        During my lunch break, I went for a walk around the park near my office. It was a beautiful day outside, and I felt grateful for the opportunity to get some fresh air and sunshine. As I walked, I listened to a podcast about mindfulness and tried to focus on being present in the moment.
+
+                        After work, I met up with a friend for dinner. We caught up on each other’s lives and talked about our plans for the future. It was nice to have some social time after a busy day at work.
+
+                        Before bed, I took some time to reflect on the day. I thought about the things that went well and the areas where I could improve. I also wrote down some goals for tomorrow, including getting up a little bit earlier and taking a few moments to meditate before starting my day.
+
+                        Overall, today was a good day. I feel grateful for the opportunities and experiences that came my way, and I’m looking forward to what tomorrow will bring.
 
             [EXAMPLE]
-            [INST] Question: {question} 
-            Context: {context} 
+            [INST] Make it a journal entry where it has date, and summary of the day. No listing activities. Also make sure you include all of the "moments" in the QUESTION. Do not restate the CONTEXT questions, they are to help you to write your journal by provoking your thoughts.
+            Question: {question} 
+            Here are some questions that will help as a journaling template: {context} 
             Answer: [/INST]
             """
         )
@@ -82,5 +92,5 @@ def query_chroma(query):
         return f"Error during query: {e}"
 
 if __name__ == "__main__":
-    query = "My mom deadd, I have something I dont wanna tell anyone"  # Replace with an actual query
+    query = "Today I ate my booger and I don't want to tell anyone.. I think one of my friends saw it and didn't say anything LOL. I just ate lunch with my dad and it was pretty good pankcakes ahha., "  # Replace with an actual query
     print(query_chroma(query))
