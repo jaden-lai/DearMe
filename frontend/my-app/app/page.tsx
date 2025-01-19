@@ -9,8 +9,6 @@ import { Readable } from "stream";
 import logoPng from './logo.png';
 import { DatePickerDemo } from "@/components/ui/datepicker";
 
-import { ELEVENLABS_API_KEY } from "@/config";
-
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");  // Track input value
