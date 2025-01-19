@@ -13,7 +13,7 @@ import { ELEVENLABS_API_KEY } from "@/config";  // Update import path
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");  // Track input value
-  const [displayText, setDisplayText] = useState("Tell me about it");  // Add this state
+  const [displayText, setDisplayText] = useState("To yourself, for yourself");  // Add this state
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   const client = new ElevenLabsClient({

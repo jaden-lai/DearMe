@@ -253,8 +253,10 @@ export function PlaceholdersAndVanishInput({
           strokeLinejoin="round"
           className={`h-4 w-4 ${isRecording ? 'text-white' : 'text-gray-300'}`}
         >
-          <path d="M12 1v22m-7-7h14" />
-          <path d="M15 14l4-4-4-4" />
+          {/* Microphone icon */}
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="22" />
         </motion.svg>
       </button>
 
