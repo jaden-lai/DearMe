@@ -14,7 +14,7 @@ import { ELEVENLABS_API_KEY } from "@/config";  // Update import path
 export default function Home() {
   const [inputValue, setInputValue] = useState("");  // Track input value
   const [displayText, setDisplayText] = useState("To yourself, for yourself");  // Add this state
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState("");
 
   const client = new ElevenLabsClient({
     apiKey: ELEVENLABS_API_KEY || "",  // Add fallback empty string
@@ -101,7 +101,33 @@ export default function Home() {
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+
   };
+  
+const handleDateChange = async (newDate: string | undefined) => {
+  setDate(newDate ?? "");
+  try {
+    console.log(newDate);
+    const response = await fetch('http://localhost:8000/journal', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({session_id: newDate}),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const data = await response.json();
+    console.log("Server response:", data.response);
+    
+    setDisplayText(data.response);  // Update display text immediately
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+}
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-slate-950">
@@ -137,7 +163,7 @@ export default function Home() {
       </div>
 
       <div className="absolute top-[3vh] right-[3vw] z-50">
-        <DatePickerDemo />
+        <DatePickerDemo onDateChange={handleDateChange} />
       </div>
     </div>
   );

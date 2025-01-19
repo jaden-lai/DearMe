@@ -100,6 +100,7 @@ async def query_endpoint(request: QueryRequest):
 @app.post("/journal")
 async def create_journal(session_id: str):
     try:
+        print(session_id)
         response = journalrag.query_chroma(session_id)
         print(response)
         return {"response": response}

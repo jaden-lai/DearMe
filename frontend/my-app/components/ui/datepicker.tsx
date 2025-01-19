@@ -13,13 +13,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function DatePickerDemo() {
+export function DatePickerDemo({ onDateChange }) {
   const [date, setDate] = React.useState<Date>()
 
   const handleSubmit = () => {
     if (date) {
-      console.log("Selected date:", date);
-      // Add your submission logic here
+      // console.log("Selected date:", date);
+
+      // Format the date to be YYYYMMDD
+      const session = format(date, "yyyyMMdd");
+      console.log("Formatted date:", session);
+      setDate(date);
+      onDateChange(session);
     }
   };
 
