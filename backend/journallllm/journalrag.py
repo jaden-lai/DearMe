@@ -28,10 +28,12 @@ def query_chroma(query):
         prompt = PromptTemplate.from_template(
             """
             <s> [INST] You are going to write a journal entry according to the QUESTION which will be what the user experienced during the day. 
-            Make sure to include the date on top.[/INST] </s> 
+            Make sure to include the date on top, and start with: Dear Me, .[/INST] </s> 
             [EXAMPLE]1. User: "Today, I've been thinking a lot about what my cores values are. I got in trouble today because I was honest about my wrongdoings, but it defintely felt better being honest"
                         AI Response:
                         Date: January 15, 2023
+
+                        Dear Me, 
 
                         Today I’ve been considering my core values and how they impact the decisions I make in my life. I realize that my values are an essential part of who I am, and they play a significant role in shaping my thoughts, actions, and choices.
 
@@ -45,6 +47,8 @@ def query_chroma(query):
                     2. User: "Bruh therer were so many meetings today at work I was working like a dog. I met a friend to dinner today but we vibed and chilled and talked baout the future. It was nice having a nice social time let sgooo"
                         AI Response:
                         Date: April 27, 2022
+
+                        Dear Me,
 
                         Today was a busy day at work. I had a lot of meetings and deadlines to meet, which kept me on my toes all day. I felt a little bit stressed at times, but overall, I was able to stay focused and get everything done that needed to be done.
 
