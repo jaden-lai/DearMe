@@ -22,22 +22,17 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello "}
+    return {"message": "Hello World"}
 
-@app.post("/convert_to_speech")
+
 def convert_to_speech(text: str):
+    """
+    Text to speech
+    """
     try:
-        tts.generateVoice(text, "./")
+        tts.generateVoice(text, "data/output.wav")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    return {"message": "Success"}
-
-@app.post("/convert_to_text")
-def convert_to_text():
-    return {"message": "Success"}
-
-@app.get("/get_text")
-def get_text():
     return {"message": "Success"}
 
 @app.post("/query")
@@ -45,6 +40,8 @@ async def query_endpoint(request: QueryRequest):
     query = request.query
     try:
         response = raggy.query_chroma(query)
+        print(response)
+        convert_to_speech(response)
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
