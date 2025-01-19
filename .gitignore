@@ -1,2 +1,4 @@
 .venv
-./backend/.env
+backend/.env
+backend/convollm/__pycache__
+backend/routers/__pycache__

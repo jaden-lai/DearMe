@@ -10,6 +10,9 @@ ssl._create_default_https_context = ssl._create_unverified_context
 CHROMA_PATH = "chroma"
 
 def query_chroma(query):
+    """
+    THIS IS THE ONE
+    """
     try:
         # Embedding function
         embedding = FastEmbedEmbeddings()
@@ -79,8 +82,8 @@ def query_chroma(query):
         return response.content  # Accessing the content directly
     
     except Exception as e:
-        return f"Error during query: {e}"
+        raise Exception(f"Error during query: {e}")
 
-if __name__ == "__main__":
-    query = "My mom deadd"  # Replace with an actual query
-    print(query_chroma(query))
+# if __name__ == "__main__":
+#     query = "My mom deadd"  # Replace with an actual query
+#     print(query_chroma(query))
