@@ -4,14 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-// Add these type declarations at the top of the file, after the imports
-declare global {
-  interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
-  }
-}
-
 export function PlaceholdersAndVanishInput({
   placeholders,
   onChange,
@@ -245,7 +237,7 @@ export function PlaceholdersAndVanishInput({
       <button
         type="button"
         onClick={toggleRecording}
-        className="absolute right-14 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full bg-amber-200 dark:bg-zinc-800 transition duration-200 flex items-center justify-center"
+        className="absolute right-14 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full bg-amber-100 dark:bg-zinc-800 transition duration-200 flex items-center justify-center"
       >
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
