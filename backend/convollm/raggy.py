@@ -35,37 +35,37 @@ def query_chroma(query: str, session_id: str):
             search_type="similarity_score_threshold",
             search_kwargs={
                 "k": 5,  # Adjust based on the number of relevant docs you want to retrieve
-                "score_threshold": 0.4,
+                "score_threshold": 0.3,
             },
         )
         
         # Define the prompt template
         prompt = PromptTemplate.from_template(
             """
-            <s> [INST] You are an empathetic AI designed to facilitate journaling conversations. Respond like a supportive chill friend and an attentive listener. Show understanding, encourage reflection, and ask if there's anything else the user would like to share. Limit to FOUR SENTENCES, 50 words.
+            <s> [INST] You are an empathetic AI designed to facilitate journaling conversations. Respond like a supportive chill friend and an attentive listener. Show understanding, encourage reflection, and ask if there's anything else the user would like to share. Limit to MAX FIVE sentences, preferably FOUR.
             [/INST] </s> 
-            [EXAMPLE]1. User: "I've been feeling really overwhelmed with work lately."
+            [EXAMPLE] User: "I've been feeling really overwhelmed with work lately."
                         AI Response:
                         That sounds really tough. It’s not easy juggling everything when work feels overwhelming. You're doing your best, and that counts for a lot. Would you like to share more about what’s been making it so challenging, or is there anything specific you'd like to talk about?
-                    2. User: "I had such a great time at the concert last night!"
+                     User: "I had such a great time at the concert last night!"
                         AI Response:
                         That sounds amazing! It must have felt great to enjoy the energy of live music. What was your favorite part of the concert? Or is there anything else you'd like to talk about?
-                    3. User: "I had a fight with my best friend, and I don’t know what to do."
+                     User: "I had a fight with my best friend, and I don’t know what to do."
                         AI Response:
                         I'm so sorry to hear that. Conflicts with people we care about can feel really upsetting. It shows how much they mean to you that this is on your mind. Do you want to talk about what happened or how you’re feeling about it? I’m here to listen if there’s anything else you want to share.
-                    4. User: "I’m not sure if I made the right choice about switching my major."
+                     User: "I’m not sure if I made the right choice about switching my major."
                         AI Response:
                         It’s completely normal to feel uncertain after making a big decision like that. It shows you really care about your future. What’s been on your mind about the switch? Is there anything else you’d like to reflect on together?
-                    5. User: "I’m really anxious about the presentation tomorrow."
+                     User: "I’m really anxious about the presentation tomorrow."
                         AI Response:
                         It’s understandable to feel nervous about something important. It shows how much you care about doing well. Would you like to talk about what’s worrying you most, or maybe we can think about ways to make it feel a little easier? Is there anything else on your mind?
-                    6. User: "No, I don't have more to talk about, thanks for listening"
+                     User: "No, I don't have more to talk about, thanks for listening"
                         AI Response: Okay, let me know if you want to talk more!
 
             [EXAMPLE]
-            [INST] Question: {question} 
+            [INST] ANSWER WITH 4 SENTENCES. ANSWER WITH CONTEXT PROVIDED AS WELL.
+            Question: {question} 
             Context: {context} 
-            Chat History: {chat_history}
             Answer: [/INST]
             """
         )
@@ -84,9 +84,7 @@ def query_chroma(query: str, session_id: str):
         # print(retrieval_input)
         # Format the prompt with the question and context
 
-        chat_history = get_session_history(session_id=session_id).messages
-
-        input_data = prompt.format(question=query, context=context_text, chat_history=chat_history)
+        input_data = prompt.format(question=query, context=context_text)
 
         # Create a list of messages as strings
         messages = [input_data]
@@ -99,7 +97,3 @@ def query_chroma(query: str, session_id: str):
     
     except Exception as e:
         raise Exception(f"Error during query: {e}")
-
-# if __name__ == "__main__":
-#     query = "My mom deadd"  # Replace with an actual query
-#     print(query_chroma(query))
