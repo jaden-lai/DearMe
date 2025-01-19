@@ -9,6 +9,7 @@ import logoPng from './logo.png';
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");  // Track input value
+  const [displayText, setDisplayText] = useState("How are you?");  // Add this state
 
   const placeholders = [
     "Type your thoughts here...",
@@ -22,8 +23,11 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Submitting:", inputValue); // Debug log
+    
     try {
-      const response = await fetch('/api/submit', {  // adjust URL to your API endpoint
+      // Temporarily comment out API call for testing
+      /*const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +40,10 @@ export default function Home() {
       }
       
       const data = await response.json();
-      console.log("Server response:", data);
+      console.log("Server response:", data);*/
+      
+      setDisplayText(inputValue);  // Update display text immediately
+      setInputValue(""); // Clear input after submission
       
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -59,7 +66,12 @@ export default function Home() {
 
       {/* TextGenerateEffect above lamp but below input */}
       <div className="absolute bottom-[25vh] left-1/2 transform -translate-x-1/2 z-20 w-[min(90vw,800px)] text-center">
-        <TextGenerateEffect words="How are you?" duration={1} filter={true} />
+        <TextGenerateEffect 
+          key={displayText}
+          words={displayText} 
+          duration={1} 
+          filter={true} 
+        />
       </div>
 
       {/* PlaceholdersAndVanishInput on top */}
