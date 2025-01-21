@@ -1,4 +1,13 @@
 Devpost Link: https://devpost.com/software/dear-me-8emch1
+
+### 🛠️ Tech Stack  
+🗣️ XTTS-V2, Ollama Mistral (local) 
+📂 Redis, Chroma  
+🎨 Next.js, React, TailwindCSS  
+⚙️ Python, FastAPI  
+📝 Custom algorithms  
+📴 Local device support  
+
 ## Inspiration  
 The inspiration for **Dear Me** came from the idea of making self-reflection more accessible and meaningful in today’s busy world. Journaling is a proven way to boost mental well-being and track personal growth, but many people struggle to maintain the habit... (like us who built DearMe)! We wanted to create a solution that feels natural, effortless, and secure, encouraging people to reflect without added stress.  
 
