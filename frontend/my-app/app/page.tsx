@@ -74,7 +74,7 @@ export default function Home() {
     console.log("Submitting:", inputValue); // Debug log
     
     try {
-      const response = await fetch('http://localhost:8000/query', {
+      const response = await fetch('http://localhost:8080/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ const handleDateChange = async (newDate: string) => {
   setDate(newDate ?? "");
   try {
     console.log(newDate);
-    const response = await fetch('http://localhost:8000/journal', {
+    const response = await fetch('http://localhost:8080/journal', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

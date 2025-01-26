@@ -2,13 +2,15 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from langchain_community.chat_message_histories import RedisChatMessageHistory
-
+from dotenv import load_dotenv
 
 from routers import tts
 from convollm import raggy
 from journallllm import journalrag
 
-import datetime, redis
+import datetime, redis, os
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -24,7 +26,7 @@ app.add_middleware(
 # Session is YYYYMMDD
 session = datetime.datetime.now().strftime("%Y%m%d")
 
-REDIS_URL = "redis://localhost:6379"
+REDIS_URL = os.getenv("REDIS_URL")
 
 # Define the input data model
 class QueryRequest(BaseModel):
@@ -72,7 +74,7 @@ def read_root():
 def ping_db():
     try:
         r = redis.Redis.from_url(REDIS_URL)
-        r.ping()
+        assert r.ping()
         return {"message": "Database connection successful"}
     except Exception as e:
         raise HTTPException(status_code=500, detail="Database connection error")
@@ -98,7 +100,7 @@ async def query_endpoint(request: QueryRequest):
         log_messages(session_id, query, response)
         return {"response": response}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"{str(e)} at /query")
     
 @app.post("/journal")
 async def create_journal(request: JournalRequest):

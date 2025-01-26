@@ -1,5 +1,13 @@
 {
   "dependencies": {
-    "elevenlabs": "^1.50.2"
+    "elevenlabs": "^1.50.2",
+    "next": "^12.0.0",
+    "react": "18.x", 
+    "react-dom": "18.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   }
 }

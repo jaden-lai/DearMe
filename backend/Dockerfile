@@ -15,7 +15,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Expose the port on which the application will run
-EXPOSE 8080
+EXPOSE 8000
 
 # Start the backend server using uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
