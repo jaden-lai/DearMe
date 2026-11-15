@@ -1,4 +1,8 @@
-Devpost Link: https://devpost.com/software/dear-me-8emch1
+# Dear Me
+
+A private, offline AI journaling companion that turns your daily conversations into personal journal entries, running entirely on local LLMs, speech models and databases. Built at nwHacks 2025.
+
+[View on Devpost](https://devpost.com/software/dear-me-8emch1)
 
 ### 🛠️ Tech Stack  
 🗣️ XTTS-V2, Ollama Mistral (local) 
